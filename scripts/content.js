@@ -1,4 +1,6 @@
-
+(function () {
+    highlightUtil.appendToolbarNode();
+})();
 
 const localpath = window.location.href;
 chrome.storage.local.get(localpath, (res) => {
@@ -19,13 +21,19 @@ document.addEventListener('mouseup', (event) => {
     const cloneRange = range.cloneRange();
     const localpath = window.location.href;
     const ele = range.commonAncestorContainer;
+
+    highlightUtil.hideToolbar();
     if (txt && ele.nodeType === 3) {
-        if (ele.parentNode.nodeName === "HIGHLIGHT") {
+        const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        highlightUtil.setToolbarStyle(scrollLeft + event.clientX, scrollTop + event.clientY);
+
+        if (ele.parentNode.nodeName === 'HIGHLIGHT') {
             console.log('remove highlight !!!');
-            removeHightLineStyle(ele);
-           
+            highlightUtil.removeHightLineStyle(ele);
         } else {
             console.log('set highlight !!!');
+
             const storeObj = {
                 startOffset: range.startOffset,
                 endOffset: range.endOffset,
@@ -33,15 +41,16 @@ document.addEventListener('mouseup', (event) => {
                 xpath: '',
                 innerHTML: '',
             };
-    
-            setHightLineStyle(range);
-            const ele = range.commonAncestorContainer;
-            const innerHTML = ele.innerHTML;
-            const path = getElementXPath(ele);
-    
-            storeObj.xpath = path;
-            storeObj.innerHTML = innerHTML;
-    
+
+            highlightUtil.setRange(range);
+
+            // const ele = range.commonAncestorContainer;
+            // const innerHTML = ele.innerHTML;
+            // const path = getElementXPath(ele);
+
+            // storeObj.xpath = path;
+            // storeObj.innerHTML = innerHTML;
+
             // chrome.storage.local.remove([localpath]);
             // chrome.storage.local.set(
             //     {
@@ -52,9 +61,5 @@ document.addEventListener('mouseup', (event) => {
             //     }
             // );
         }
-        
     }
 });
-
-
-

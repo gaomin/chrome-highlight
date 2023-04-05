@@ -1,0 +1,23 @@
+#highlight-container {
+    position: absolute; 
+    left: 0px; 
+    top: 0px; 
+    border: 1px solid #f00;
+}
+
+#highlight-toolbar {
+    position: absolute; 
+    border: 1px solid #f00;
+    background: #fff;
+    display: inline-block;
+    white-space: nowrap;
+    display: flex;
+}
+
+.highlight-toolbar-color {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
