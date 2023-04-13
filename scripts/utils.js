@@ -1,4 +1,4 @@
-const highlightUtil = {
+const markUtil = {
     range: null,
     setRange: function (_range) {
         this.range = _range;
@@ -42,38 +42,48 @@ const highlightUtil = {
     },
 
     setHightLineStyle: function (bgColor) {
-        if (!highlightUtil.range) return;
-        const parent = document.createElement('highlight');
+        if (!markUtil.range) return;
+        const parent = document.createElement('mark');
         parent.setAttribute('style', `background-color: ${bgColor}`);
-        parent.appendChild(highlightUtil.range?.extractContents());
-        highlightUtil.range.insertNode(parent);
+        parent.appendChild(markUtil.range?.extractContents());
+        markUtil.range.insertNode(parent);
     },
 
     removeHightLineStyle: function (textNode) {
-        const highlightNode = textNode.parentNode;
-        const parentNode = highlightNode.parentNode;
-        highlightNode.parentNode.insertBefore(textNode, highlightNode);
-        parentNode.removeChild(highlightNode);
+        const markNode = textNode.parentNode;
+        const parentNode = markNode.parentNode;
+        markNode.parentNode.insertBefore(textNode, markNode);
+        parentNode.removeChild(markNode);
         parentNode.normalize();
     },
 
     appendToolbarNode: function () {
-        const node = document.querySelector('#highlight-container');
+        const node = document.querySelector('#mark-container');
         if (node) return;
         const container = document.createElement('div');
-        container.id = 'highlight-container';
+        container.id = 'mark-container';
         const toolbar = document.createElement('div');
-        toolbar.id = 'highlight-toolbar';
-        const defaultColors = ['lightpink', 'darkseagreen', 'gold'];
+        toolbar.id = 'mark-toolbar';
 
+        // add clear btn
+        const clearBtn = document.createElement('img');
+        clearBtn.id = 'mark-toolbar-clear';
+        const imgUri = chrome.runtime.getURL('../images/rubber.png');
+        clearBtn.style.width = '20px';
+        clearBtn.src = imgUri;
+        toolbar.appendChild(clearBtn);
+
+
+        // set color pickers
+        const defaultColors = ['lightpink', 'darkseagreen', 'gold'];
         defaultColors.forEach((color) => {
             const btn = document.createElement('span');
-            btn.setAttribute('class', 'highlight-toolbar-color');
+            btn.setAttribute('class', 'mark-toolbar-color');
             btn.setAttribute('style', `background-color: ${color}`);
             btn.addEventListener('mouseup', (event) => {
                 event.stopPropagation();
                 const bgColor = getComputedStyle(event.target).backgroundColor;
-                highlightUtil.setHightLineStyle(bgColor);
+                markUtil.setHightLineStyle(bgColor);
                 toolbar.style.display = 'none';
             });
             toolbar.appendChild(btn);
@@ -85,33 +95,34 @@ const highlightUtil = {
     },
 
     setToolbarStyle: function (x, y) {
-        const node = document.querySelector('#highlight-toolbar');
+        const node = document.querySelector('#mark-toolbar');
         if (!node) return;
-        node.style.display = 'inline-block';
+
         node.style.left = x + 'px';
         node.style.top = y + 'px';
     },
 
+    showToolbar() {
+        const node = document.querySelector('#mark-toolbar');
+        if (!node) return;
+        node.style.display = 'grid';
+    },
+
     hideToolbar() {
-        const node = document.querySelector('#highlight-toolbar');
+        const node = document.querySelector('#mark-toolbar');
         if (!node) return;
         node.style.display = 'none';
 
-        highlightUtil.range = null;
+        markUtil.range = null;
     },
 
     shouldChange: function (content, newContent) {
-        const regex = /<\/?highlight.*?>/g;
+        const regex = /<\/?mark.*?>/g;
         const htmlContent = newContent.replaceAll(regex, '');
         return content.includes(newContent);
     },
 
     // TODO： 交互节点
 
-    // TODO: 数据存储
-    addStore: function () {},
 
-    removeStore: function () {},
-
-    getStore: function () {},
 };

@@ -1,5 +1,5 @@
 (function () {
-    highlightUtil.appendToolbarNode();
+    markUtil.appendToolbarNode();
 })();
 
 const localpath = window.location.href;
@@ -22,17 +22,18 @@ document.addEventListener('mouseup', (event) => {
     const localpath = window.location.href;
     const ele = range.commonAncestorContainer;
 
-    highlightUtil.hideToolbar();
+    markUtil.hideToolbar();
     if (txt && ele.nodeType === 3) {
-        const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        highlightUtil.setToolbarStyle(scrollLeft + event.clientX, scrollTop + event.clientY);
 
-        if (ele.parentNode.nodeName === 'HIGHLIGHT') {
-            console.log('remove highlight !!!');
-            highlightUtil.removeHightLineStyle(ele);
+        if (ele.parentNode.nodeName === 'mark') {
+            console.log('remove mark !!!');
+            markUtil.removeHightLineStyle(ele);
         } else {
-            console.log('set highlight !!!');
+            console.log('set mark !!!');
+            const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            markUtil.setToolbarStyle(scrollLeft + event.clientX, scrollTop + event.clientY);
+            markUtil.showToolbar();
 
             const storeObj = {
                 startOffset: range.startOffset,
@@ -42,7 +43,7 @@ document.addEventListener('mouseup', (event) => {
                 innerHTML: '',
             };
 
-            highlightUtil.setRange(range);
+            markUtil.setRange(range);
 
             // const ele = range.commonAncestorContainer;
             // const innerHTML = ele.innerHTML;
