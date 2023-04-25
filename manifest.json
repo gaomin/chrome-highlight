@@ -13,6 +13,8 @@
         {
             "js": [
                 "scripts/utils.js",
+                "scripts/model.js",
+                "scripts/toolbar.js",
                 "scripts/content.js"
             ],
             "css": [
