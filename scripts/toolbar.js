@@ -1,37 +1,53 @@
 const markToolbar = {
-    range: null,
-    setRange: function (_range) {
-        this.range = _range;
-    },
-
-    setHightLineStyle: function (bgColor) {
-        if (!markToolbar.range) return;
-        const textNode = markToolbar.range.commonAncestorContainer;
-        if (textNode.parentNode.nodeName.toLowerCase() === 'mark') {
-            textNode.parentNode.setAttribute('style', `background-color: ${bgColor}`);
+    setHightLineStyle: function (bgColor, closeToolbar = true) {
+        if (!markModel.range) return;
+        const textNode = markModel.range.commonAncestorContainer;
+        if (textNode.nodeType === 3) {
+            if (textNode.parentNode.nodeName.toLowerCase() === 'mark') {
+                textNode.parentNode.setAttribute('style', `background-color: ${bgColor}`);
+            } else {
+                const parent = document.createElement('mark');
+                const id = markUtil.getUuid();
+                parent.id = id;
+                parent.setAttribute('style', `background-color: ${bgColor}`);
+                parent.appendChild(markModel.range?.extractContents());
+                markModel.range.insertNode(parent);
+                markModel.addStore(id);
+            }
         } else {
-            const parent = document.createElement('mark');
-            parent.setAttribute('style', `background-color: ${bgColor}`);
-            parent.appendChild(markToolbar.range?.extractContents());
-            markToolbar.range.insertNode(parent);
+            const markNode = Array.prototype.filter.call(textNode.children, node => node.nodeName.toLowerCase() === 'mark')[0];
+            if (markNode) {
+                markNode.setAttribute('style', `background-color: ${bgColor}`);
+            }
         }
-        markToolbar.hideToolbar();
+        closeToolbar && this.hideToolbar();
     },
 
     removeHightLineStyle: function () {
-        const txt = window.getSelection().toString();
-        const range = window.getSelection().getRangeAt(0);
-        const textNode = range.commonAncestorContainer;
-
-        if (txt && textNode.nodeType === 3 && textNode.parentNode.nodeName.toLowerCase() === 'mark') {
+        if (!markModel.range) return;
+        const textNode = markModel.range.commonAncestorContainer;
+        let markId = null;
+        if (textNode.nodeType === 3 && textNode.parentNode.nodeName.toLowerCase() === 'mark') {
             const markNode = textNode.parentNode;
             const parentNode = markNode.parentNode;
-            markNode.parentNode.insertBefore(textNode, markNode);
+            markId = markNode.id;
+            parentNode.insertBefore(textNode, markNode);
             parentNode.removeChild(markNode);
             parentNode.normalize();
+        } else {
+            const markNode = Array.prototype.filter.call(textNode.children, node => node.nodeName.toLowerCase() === 'mark')[0];
+            const newTextNode = document.createTextNode(markNode.innerHTML);
+            if (markNode) {
+                markId = markNode.id;
+                const parentNode = markNode.parentNode;
+                parentNode.insertBefore(newTextNode, markNode);
+                parentNode.removeChild(markNode);
+                parentNode.normalize();
+            }
         }
 
-        markToolbar.hideToolbar();
+        this.hideToolbar();
+        markModel.removeStore(markId);
     },
 
     appendToolbarNode: function () {
@@ -43,6 +59,52 @@ const markToolbar = {
         toolbar.id = 'mark-toolbar';
         toolbar.style.display = 'none';
 
+
+        // set default color
+        const defaultColors = ['yellow', '#f0a1a8', '#fb80b5', '#fbda41', '#fb8b05', '#93d6dc', '#57c3c2'];
+        defaultColors.forEach((color) => {
+            const btn = document.createElement('span');
+            btn.setAttribute('class', 'mark-toolbar-color');
+            btn.setAttribute('style', `background-color: ${color}`);
+            btn.addEventListener('mouseup', (event) => {
+                event.stopPropagation();
+                const bgColor = getComputedStyle(event.target).backgroundColor;
+                this.setHightLineStyle(bgColor, false);
+            });
+            toolbar.appendChild(btn);
+        });
+
+
+        // add color picker
+        let styleNode;
+        const colorPicker = document.createElement('input');
+        colorPicker.id = 'mark-toolbar-color-picker';
+        colorPicker.type = 'color';
+        colorPicker.addEventListener('mouseup', (event) => {
+            event.stopPropagation();
+        });
+        colorPicker.addEventListener("input", (event) => {
+            styleNode = document.querySelector("#mark-temp-warp")
+            if (!styleNode) {
+                styleNode = document.createElement('style');
+                styleNode.id = "mark-temp-warp"
+                document.head.appendChild(styleNode);
+                sheet = styleNode.sheet;
+                sheet.addRule('::selection', 'background:transparent');
+            }
+            styleNode.disabled = false;
+            const color = event.target.value;
+            this.setHightLineStyle(color, false);
+
+        }, false);
+
+        colorPicker.addEventListener("change", (event) => {
+            const color = event.target.value;
+            this.setHightLineStyle(color);
+            styleNode.disabled = true;
+        }, false);
+        toolbar.appendChild(colorPicker);
+
         // add clear btn
         const clearBtn = document.createElement('img');
         clearBtn.id = 'mark-toolbar-clear';
@@ -51,25 +113,10 @@ const markToolbar = {
         clearBtn.src = imgUri;
         clearBtn.addEventListener('mouseup', (event) => {
             event.stopPropagation();
-            markToolbar.removeHightLineStyle();
+            this.removeHightLineStyle();
         });
         toolbar.appendChild(clearBtn);
 
-
-        // set color pickers
-        const defaultColors = ['lightpink', 'darkseagreen', 'gold'];
-        defaultColors.forEach((color) => {
-            const btn = document.createElement('span');
-            btn.setAttribute('class', 'mark-toolbar-color');
-            btn.setAttribute('style', `background-color: ${color}`);
-            btn.addEventListener('mouseup', (event) => {
-                event.stopPropagation();
-                console.log(window.getSelection().toString())
-                const bgColor = getComputedStyle(event.target).backgroundColor;
-                markToolbar.setHightLineStyle(bgColor);
-            });
-            toolbar.appendChild(btn);
-        });
 
         container.appendChild(toolbar);
         document.body.appendChild(container);

@@ -22,3 +22,24 @@
     height: 20px;
     border-radius: 50%;
 }
+
+#mark-toolbar-color-picker {
+    cursor: pointer;
+    border: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-image: -webkit-gradient(linear, 0 0, 100% 0, from(red), color-stop(15%, orange), color-stop(30%, yellow), color-stop(50%, green), color-stop(65%, darkcyan), color-stop(80%, blue), to(purple));
+}
+
+#mark-toolbar-color-picker::-webkit-color-swatch-wrapper {
+    opacity: 0;
+}
+
+#mark-toolbar-color-picker::-webkit-color-swatch {
+    opacity: 0;
+}
+
+mark.temp::selection {
+    background: transparent;
+}

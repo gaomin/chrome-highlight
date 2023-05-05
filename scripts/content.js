@@ -22,13 +22,15 @@ document.addEventListener('mouseup', (event) => {
     // const localpath = window.location.href;
     const ele = range.commonAncestorContainer;
     markToolbar.hideToolbar();
-    
+
     if (txt && ele.nodeType === 3) {
         const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         markToolbar.setToolbarStyle(scrollLeft + event.clientX, scrollTop + event.clientY);
         markToolbar.showToolbar();
-        markToolbar.setRange(range);
+        // markToolbar.setRange(range);
+
+        markModel.range = range;
 
         // if (ele.parentNode.nodeName.toLowerCase() === 'mark') {
         //     console.log('remove mark !!!');

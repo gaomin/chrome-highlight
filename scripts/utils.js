@@ -7,7 +7,7 @@ const markUtil = {
      * To keep paths short, the path generated tries to find a parent element with a unique
      * id, eg: #content article section:nth-of-type(3) div p
      */
-    getElementXPath: function (element) {
+    getElementXPath(element) {
         let paths = [],
             index,
             nodeName,
@@ -38,9 +38,17 @@ const markUtil = {
         return paths.length ? ' ' + paths.join(' ') : null;
     },
 
-    shouldChange: function (content, newContent) {
+    shouldChange(content, newContent) {
         const regex = /<\/?mark.*?>/g;
         const htmlContent = newContent.replaceAll(regex, '');
         return content.includes(htmlContent);
+    },
+
+    getUuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (Math.random() * 16) | 0,
+                v = c == 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
     }
 };
