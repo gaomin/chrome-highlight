@@ -1,13 +1,21 @@
 const markModel = {
     _range: null,
-    model: [],
+    _model: [],
 
     set range(range) {
-        this._range = range.cloneRange();
+        this._range = range;
     },
 
     get range() {
         return this._range;
+    },
+
+    set model(model) {
+        this._model = model;
+    },
+
+    get model() {
+        return this._model;
     },
 
     addStore: function (id) {
@@ -24,7 +32,7 @@ const markModel = {
             endOffset: this.range.endOffset,
             rangeText: text,
             // rangeFragment: rangeContent,
-            rangeContainer: container.innerHTML
+            rangeInnerHTML: container.innerHTML
         };
 
         this.model.push(store);

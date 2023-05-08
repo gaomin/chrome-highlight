@@ -26,7 +26,6 @@ const markUtil = {
 
             for (sibling = element.previousSibling; sibling; sibling = sibling.previousSibling) {
                 if (sibling.nodeType != 1) continue;
-
                 if (sibling.nodeName == nodeName) ++index;
             }
 
@@ -41,7 +40,8 @@ const markUtil = {
     shouldChange(content, newContent) {
         const regex = /<\/?mark.*?>/g;
         const htmlContent = newContent.replaceAll(regex, '');
-        return content.includes(htmlContent);
+        const contentText = content.replaceAll(regex, '')
+        return contentText.includes(htmlContent);
     },
 
     getUuid() {

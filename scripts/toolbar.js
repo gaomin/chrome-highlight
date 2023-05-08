@@ -4,20 +4,20 @@ const markToolbar = {
         const textNode = markModel.range.commonAncestorContainer;
         if (textNode.nodeType === 3) {
             if (textNode.parentNode.nodeName.toLowerCase() === 'mark') {
-                textNode.parentNode.setAttribute('style', `background-color: ${bgColor}`);
+                textNode.parentNode.setAttribute('style', `background-color: ${bgColor}; display: inline`);
             } else {
                 const parent = document.createElement('mark');
                 const id = markUtil.getUuid();
                 parent.id = id;
-                parent.setAttribute('style', `background-color: ${bgColor}`);
-                parent.appendChild(markModel.range?.extractContents());
+                parent.setAttribute('style', `background-color: ${bgColor}; display: inline`);
+                parent.appendChild(markModel.range.extractContents());
                 markModel.range.insertNode(parent);
                 markModel.addStore(id);
             }
         } else {
             const markNode = Array.prototype.filter.call(textNode.children, node => node.nodeName.toLowerCase() === 'mark')[0];
             if (markNode) {
-                markNode.setAttribute('style', `background-color: ${bgColor}`);
+                markNode.setAttribute('style', `background-color: ${bgColor}; display: inline`);
             }
         }
         closeToolbar && this.hideToolbar();
