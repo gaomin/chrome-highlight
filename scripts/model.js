@@ -40,6 +40,21 @@ const markModel = {
         this.setStorage();
     },
 
+    modifyStore: function (id) {
+        if (!id) return;
+        const container = this.range.commonAncestorContainer;
+        const parent = container.parentNode.parentNode;
+        const store = this.model.filter(v => v.id === id)[0];
+        if (store) {
+            store.rangeInnerHTML = parent.innerHTML;
+            model = this.model.filter(v => v.id !== id);
+            model.push(store);
+            this.model = model;
+            console.log('modify', this.model)
+            this.setStorage();
+        }
+    },
+
     removeStore: function (id) {
         if (!id) return;
         this.model = this.model.filter(v => v.id !== id);

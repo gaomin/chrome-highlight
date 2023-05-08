@@ -4,7 +4,9 @@ const markToolbar = {
         const textNode = markModel.range.commonAncestorContainer;
         if (textNode.nodeType === 3) {
             if (textNode.parentNode.nodeName.toLowerCase() === 'mark') {
+                const id = textNode.parentNode.id;
                 textNode.parentNode.setAttribute('style', `background-color: ${bgColor}; display: inline`);
+                markModel.modifyStore(id);
             } else {
                 const parent = document.createElement('mark');
                 const id = markUtil.getUuid();
@@ -17,7 +19,9 @@ const markToolbar = {
         } else {
             const markNode = Array.prototype.filter.call(textNode.children, node => node.nodeName.toLowerCase() === 'mark')[0];
             if (markNode) {
+                const id = markNode.id;
                 markNode.setAttribute('style', `background-color: ${bgColor}; display: inline`);
+                markModel.modifyStore(id);
             }
         }
         closeToolbar && this.hideToolbar();
