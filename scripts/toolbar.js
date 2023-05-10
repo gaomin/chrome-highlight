@@ -128,12 +128,20 @@ const markToolbar = {
         return container;
     },
 
-    setToolbarStyle: function (x, y) {
+    setToolbarStyle: function ({ top, right, bottom }) {
         const node = document.querySelector('#mark-toolbar');
         if (!node) return;
+        const toolbarWidth = 70;
+        const toolbarHeight = 70;
+        const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const maxWidth = document.body.clientWidth;
+        const maxHeight = window.innerHeight + scrollTop;
 
-        node.style.left = x + 'px';
-        node.style.top = y + 'px';
+        const posx = scrollLeft + right + toolbarWidth > maxWidth ? maxWidth - toolbarWidth : scrollLeft + right;
+        const posy = scrollTop + bottom + toolbarHeight > maxHeight ? scrollTop + top - toolbarHeight : scrollTop + bottom;
+        node.style.left = posx + 'px';
+        node.style.top = posy + 'px';
     },
 
     showToolbar() {
