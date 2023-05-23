@@ -12,6 +12,7 @@
     "content_scripts": [
         {
             "js": [
+                "scripts/jquery-3.7.0.min.js",
                 "scripts/utils.js",
                 "scripts/model.js",
                 "scripts/toolbar.js",
@@ -28,7 +29,8 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "images/rubber.png"
+                "images/rubber.png",
+                "images/notes.svg"
             ],
             "matches": [
                "<all_urls>"

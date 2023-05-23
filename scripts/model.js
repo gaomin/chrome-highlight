@@ -18,7 +18,7 @@ const markModel = {
         return this._model;
     },
 
-    addStore: function (id) {
+    addStore(id) {
         if (!this.range) return;
         const rangeContent = this.range.cloneContents();
         const text = rangeContent.textContent;
@@ -40,7 +40,7 @@ const markModel = {
         this.setStorage();
     },
 
-    modifyStore: function (id) {
+    modifyStore(id) {
         if (!id) return;
         const container = this.range.commonAncestorContainer;
         const parent = container.parentNode.parentNode;
@@ -55,14 +55,14 @@ const markModel = {
         }
     },
 
-    removeStore: function (id) {
+    removeStore(id) {
         if (!id) return;
         this.model = this.model.filter(v => v.id !== id);
         console.log('delete', this.model);
         this.setStorage();
     },
 
-    setStorage: function () {
+    setStorage() {
         const path = window.location.href;
         chrome.storage.local.set({
             [path]: this.model,
@@ -70,4 +70,39 @@ const markModel = {
             console.log('保存成功！', this.model);
         });
     },
+
+    addNote(id, text) {
+        if (!id) return;
+        const store = this.model.filter(v => v.id === id)[0];
+        if (!store) return;
+        if (text) {
+            if (text !== store.note) {
+                store.note = text;
+                const markNode = document.getElementById(id);
+                if (markNode) {
+                    const parent = markNode.parentNode;
+                    store.rangeInnerHTML = parent.innerHTML;
+                }
+                console.log('addNote', this.model);
+                this.setStorage();
+            }
+        } else {
+            this.removeNote(id);
+        }
+    },
+
+    removeNote(id) {
+        if (!id) return;
+        const store = this.model.filter(v => v.id === id)[0];
+        if (store) {
+            store.note = null;
+            const markNode = document.getElementById(id);
+            if (markNode) {
+                const parent = markNode.parentNode;
+                store.rangeInnerHTML = parent.innerHTML;
+            }
+            console.log('removeNote', this.model);
+            this.setStorage();
+        }
+    }
 }

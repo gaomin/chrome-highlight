@@ -5,13 +5,14 @@
 const localpath = window.location.href;
 chrome.storage.local.get(localpath, (res) => {
     const store = res[localpath];
+    console.log(store);
     if (store) {
         markModel.model = store;
         store.forEach((s) => {
             const { rangeInnerHTML, xpath } = s;
-            const node = document.querySelector(xpath);
-            if (node && rangeInnerHTML && markUtil.shouldChange(node.innerHTML, rangeInnerHTML)) {
-                node.innerHTML = rangeInnerHTML;
+            const $node = $(xpath);
+            if ($node && rangeInnerHTML && markUtil.shouldChange($node.html(), rangeInnerHTML)) {
+                $node.html(rangeInnerHTML);
             }
         })
     }
@@ -38,4 +39,15 @@ window.addEventListener('resize', (event) => {
     if (!markModel.range) return;
     const rangeBoundingClientRect = markModel.range.getBoundingClientRect();
     markToolbar.setToolbarStyle(rangeBoundingClientRect);
+})
+
+document.addEventListener('mouseup', (event) => {
+    const markNode = document.querySelector('#mark-notebox');
+    const toolbarNote = document.querySelector('#mark-toolbar-notes');
+    if (event.target && !(event.target === toolbarNote || event.target === markNode || markNode.contains(event.target))) {
+        const node = document.querySelector('#mark-notebox');
+        if (node) {
+            node.style.display = 'none';
+        }
+    }
 })
