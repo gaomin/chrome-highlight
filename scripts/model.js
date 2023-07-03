@@ -18,6 +18,11 @@ const markModel = {
         return this._model;
     },
 
+    getModel(id) {
+        if (!id) return;
+        return this.model.filter(v => v.id === id)[0];
+    },
+
     addStore(id) {
         if (!this.range) return;
         const rangeContent = this.range.cloneContents();
@@ -34,9 +39,7 @@ const markModel = {
             // rangeFragment: rangeContent,
             rangeInnerHTML: container.innerHTML
         };
-
         this.model.push(store);
-        console.log('add', this.model)
         this.setStorage();
     },
 
@@ -50,7 +53,6 @@ const markModel = {
             model = this.model.filter(v => v.id !== id);
             model.push(store);
             this.model = model;
-            console.log('modify', this.model)
             this.setStorage();
         }
     },
@@ -58,7 +60,6 @@ const markModel = {
     removeStore(id) {
         if (!id) return;
         this.model = this.model.filter(v => v.id !== id);
-        console.log('delete', this.model);
         this.setStorage();
     },
 
@@ -67,7 +68,7 @@ const markModel = {
         chrome.storage.local.set({
             [path]: this.model,
         }).then(() => {
-            console.log('保存成功！', this.model);
+            // console.log('保存成功！', this.model);
         });
     },
 
@@ -83,7 +84,6 @@ const markModel = {
                     const parent = markNode.parentNode;
                     store.rangeInnerHTML = parent.innerHTML;
                 }
-                console.log('addNote', this.model);
                 this.setStorage();
             }
         } else {
@@ -101,7 +101,6 @@ const markModel = {
                 const parent = markNode.parentNode;
                 store.rangeInnerHTML = parent.innerHTML;
             }
-            console.log('removeNote', this.model);
             this.setStorage();
         }
     }

@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "gm mark test",
+    "name": "gm gmmark test",
     "version": "1.0",
     "description": "Add the reading time to Chrome Extension documentation articles",
     "icons": {
@@ -16,6 +16,7 @@
                 "scripts/utils.js",
                 "scripts/model.js",
                 "scripts/toolbar.js",
+                "scripts/list.js",
                 "scripts/content.js"
             ],
             "css": [
@@ -30,7 +31,8 @@
         {
             "resources": [
                 "images/rubber.png",
-                "images/notes.svg"
+                "images/notes.svg",
+                "images/list.svg"
             ],
             "matches": [
                "<all_urls>"

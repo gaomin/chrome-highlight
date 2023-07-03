@@ -1,10 +1,10 @@
-#mark-container {
+#gmmark-container {
     position: absolute;
     left: 0px;
     top: 0px;
 }
 
-#mark-toolbar {
+#gmmark-toolbar {
     position: absolute;
     background: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -19,18 +19,18 @@
     padding: 4px;
 }
 
-#mark-toolbar img {
+#gmmark-toolbar img {
     border: none;
 }
 
-.mark-toolbar-color {
+.gmmark-toolbar-color {
     display: block;
     width: 20px;
     height: 20px;
     border-radius: 50%;
 }
 
-#mark-toolbar-color-picker {
+#gmmark-toolbar-color-picker {
     cursor: pointer;
     border: 0;
     width: 20px;
@@ -39,28 +39,28 @@
     background-image: -webkit-gradient(linear, 0 0, 100% 0, from(red), color-stop(15%, orange), color-stop(30%, yellow), color-stop(50%, green), color-stop(65%, darkcyan), color-stop(80%, blue), to(purple));
 }
 
-#mark-toolbar-color-picker::-webkit-color-swatch-wrapper {
+#gmmark-toolbar-color-picker::-webkit-color-swatch-wrapper {
     opacity: 0;
 }
 
-#mark-toolbar-color-picker::-webkit-color-swatch {
+#gmmark-toolbar-color-picker::-webkit-color-swatch {
     opacity: 0;
 }
 
-mark {
+gmmark {
     padding: 2px 0;
     border-radius: 4px;
 }
 
-mark.temp::selection {
+gmmark.temp::selection {
     background: transparent;
 }
 
-mark.hasNote {
+gmmark.hasNote {
     border-bottom: 1px dashed black;
 }
 
-#mark-notebox {
+#gmmark-notebox {
     position: absolute;
     background: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -68,7 +68,7 @@ mark.hasNote {
     border-radius: 6px;
 }
 
-#mark-notebox-ok {
+#gmmark-notebox-ok {
     color: #fff;
     background-color: #1677ff;
     box-shadow: 0 2px 0 rgba(5, 145, 255, .1);
@@ -81,19 +81,66 @@ mark.hasNote {
     margin-bottom: 4px;
 }
 
-#mark-notebox-ok:hover {
+#gmmark-notebox-ok:hover {
     background-color: #4096ff;
 }
 
-#mark-notebox-text {
+#gmmark-notebox-text {
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     font-size: 14px;
     line-height: 1.6;
 }
 
-#mark-notebox-text:focus {
+#gmmark-notebox-text:focus {
     border-color: #4096ff;
     box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
     outline: 0;
+}
+
+#gmmark-list-icon {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    padding: 4px;
+}
+
+#gmmark-list-nodes {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 1000;
+    transition: left 0.2s ease;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+}
+
+.gmmark-list-node {
+    border: 1px solid #f00;
+    margin: 10px 4px;
+    border-radius: 6px;
+    padding: 6px 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+.gmmark-list-node-bg {
+    background: #ff0;
+    opacity: 0.5;
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }

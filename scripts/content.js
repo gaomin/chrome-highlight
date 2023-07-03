@@ -1,19 +1,29 @@
-(function () {
-    markToolbar.appendToolbarNode();
-})();
+window.onload = function () {
+    markToolbar.appendNode();
+    // markList.appendNode();
+}
 
 const localpath = window.location.href;
 chrome.storage.local.get(localpath, (res) => {
     const store = res[localpath];
-    console.log(store);
+    // console.log(store);
     if (store) {
         markModel.model = store;
         store.forEach((s) => {
-            const { rangeInnerHTML, xpath } = s;
-            const $node = $(xpath);
-            if ($node && rangeInnerHTML && markUtil.shouldChange($node.html(), rangeInnerHTML)) {
-                $node.html(rangeInnerHTML);
+            const { rangeInnerHTML, xpath, rangeText } = s;
+            const $node = $(xpath).filter((index, elem) => elem.innerText.includes(rangeText));
+            if ($node.length > 1) {
+                $node.each((index, elem) => {
+                    if (elem && rangeInnerHTML && markUtil.shouldChange(elem.innerHTML, rangeInnerHTML)) {
+                        $(elem).html(rangeInnerHTML);
+                    }
+                })
+            } else {
+                if ($node && rangeInnerHTML && markUtil.shouldChange($node.html(), rangeInnerHTML)) {
+                    $node.html(rangeInnerHTML);
+                }
             }
+
         })
     }
 });
@@ -28,7 +38,11 @@ document.addEventListener('mouseup', (event) => {
 
         if (txt && ele.nodeType === 3) {
             const rangeBoundingClientRect = range.getBoundingClientRect();
-            markToolbar.setToolbarStyle(rangeBoundingClientRect)
+            const { top, bottom, right } = rangeBoundingClientRect;
+            const { x, y } = event;
+            const lineHeight = parseInt($(ele.parentElement).css('line-height'));
+            const newBottom = lineHeight && (bottom - top > lineHeight) ? top + lineHeight : bottom;
+            markToolbar.setToolbarStyle({ top, right: Math.min(x, right), bottom: y > newBottom ? bottom : newBottom });
             markToolbar.showToolbar();
             markModel.range = range;
         }
@@ -38,14 +52,18 @@ document.addEventListener('mouseup', (event) => {
 window.addEventListener('resize', (event) => {
     if (!markModel.range) return;
     const rangeBoundingClientRect = markModel.range.getBoundingClientRect();
-    markToolbar.setToolbarStyle(rangeBoundingClientRect);
+    const ele = markModel.range.commonAncestorContainer;
+    const { top, bottom, right } = rangeBoundingClientRect;
+    const lineHeight = parseInt($(ele.parentElement).css('line-height'));
+    const newBottom = lineHeight && (bottom - top > lineHeight) ? top + lineHeight : bottom;
+    markToolbar.setToolbarStyle({ top, right, bottom: newBottom });
 })
 
 document.addEventListener('mouseup', (event) => {
-    const markNode = document.querySelector('#mark-notebox');
-    const toolbarNote = document.querySelector('#mark-toolbar-notes');
-    if (event.target && !(event.target === toolbarNote || event.target === markNode || markNode.contains(event.target))) {
-        const node = document.querySelector('#mark-notebox');
+    const markNode = document.querySelector('#gmmark-notebox');
+    const toolbarNote = document.querySelector('#gmmark-toolbar-notes');
+    if (event.target && !(event.target === toolbarNote || (markNode && event.target === markNode) || (markNode && markNode.contains(event.target)))) {
+        const node = document.querySelector('#gmmark-notebox');
         if (node) {
             node.style.display = 'none';
         }

@@ -38,7 +38,7 @@ const markUtil = {
     },
 
     shouldChange(content, newContent) {
-        const regex = /<\/?mark.*?>/g;
+        const regex = /<\/?gmmark.*?>/g;
         const htmlContent = newContent.replaceAll(regex, '');
         const contentText = content.replaceAll(regex, '')
         return contentText.includes(htmlContent);
